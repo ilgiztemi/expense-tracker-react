@@ -33,7 +33,16 @@ const Tracker = () => {
     setText("");
   };
   useEffect(() => {
-    localStorage.setItem("history", JSON.stringify(history));
+    const newHistory = JSON.parse(sessionStorage.getItem("saved-data"));
+    if (newHistory) {
+      setHistory(newHistory);
+    }
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      sessionStorage.setItem("saved-data", JSON.stringify(history));
+    });
   }, [history]);
   const handleDelete = (id) => {
     setHistory(history.filter((el) => el.id !== id));
@@ -57,7 +66,7 @@ const Tracker = () => {
         <h3 className="history">History</h3>
         <ul className="list">
           {history.map((el) => (
-            <div className="list-flex">
+            <div className="list-flex" key="el.id">
               <button onClick={() => handleDelete(el.id)} className="deleteBtn">
                 X
               </button>
