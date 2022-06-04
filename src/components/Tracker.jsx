@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -7,7 +8,6 @@ const Tracker = () => {
   const [history, setHistory] = useState([]);
   const [text, setText] = useState("");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(Date.toLocaleString(""));
   const amounts = history.map((el) => Number(el.amount));
 
   const income = amounts
@@ -19,16 +19,9 @@ const Tracker = () => {
     -1
   ).toFixed(2);
   const balance = (income - expense).toFixed(2);
-  useEffect(() => {
-    getDate();
-  }, []);
-  const getDate = () => {
-    let today = new Date();
-    setDate(today);
-  };
   const handleSubmit = (event) => {
     event.preventDefault();
-    setHistory([...history, { id: date, text: text, amount: amount }]);
+    setHistory([...history, { id: nanoid(), text: text, amount: amount }]);
     setAmount("");
     setText("");
   };
@@ -44,8 +37,8 @@ const Tracker = () => {
       sessionStorage.setItem("saved-data", JSON.stringify(history));
     });
   }, [history]);
-  const handleDelete = (id) => {
-    setHistory(history.filter((el) => el.id !== id));
+  const handleDelete = (el) => {
+    setHistory(history.filter((item) => item.id !== el.id));
   };
   return (
     <div className="container">
@@ -67,7 +60,7 @@ const Tracker = () => {
         <ul className="list">
           {history.map((el) => (
             <div className="list-flex" key="el.id">
-              <button onClick={() => handleDelete(el.id)} className="deleteBtn">
+              <button onClick={() => handleDelete(el)} className="deleteBtn">
                 X
               </button>
               <li key={el.id} className="list-item">
